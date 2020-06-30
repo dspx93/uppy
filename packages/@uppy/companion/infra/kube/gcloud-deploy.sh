@@ -20,16 +20,12 @@ mv ./kubectl ${HOME}/.local/bin/
 docker build -t transloadit/companion:latest -t transloadit/companion:$TRAVIS_COMMIT -f packages/@uppy/companion/Dockerfile packages/@uppy/companion;
 docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
 
-# Push the commit tagged docker image.
-docker push transloadit/companion:$TRAVIS_COMMIT;
-
-# If this build includes a git tag, tag the image with the git version tag and push the version.
-if [[ ! -z "${TRAVIS_TAG}" ]]; then
-  docker tag transloadit/companion:$TRAVIS_COMMIT transloadit/companion:$TRAVIS_TAG;
+if [[ -z "${TRAVIS_TAG}" ]]; then
+  docker push transloadit/companion:$TRAVIS_COMMIT;
+else
   docker push transloadit/companion:$TRAVIS_TAG;
 fi
 
-# Lastly, update the pointer to latest.
 docker push transloadit/companion:latest;
 
 
